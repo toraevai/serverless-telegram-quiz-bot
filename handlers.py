@@ -11,11 +11,11 @@ router = Router()
 @router.callback_query()
 async def bot_answer(callback: types.CallbackQuery):
     user_id = callback.from_user.id
-    # await callback.bot.edit_message_reply_markup(
-    #     chat_id=user_id,
-    #     message_id=callback.message.message_id,
-    #     reply_markup=None
-    # )
+    await callback.bot.edit_message_reply_markup(
+        chat_id=user_id,
+        message_id=callback.message.message_id,
+        reply_markup=None
+    )
     current_question_index = await get_quiz_index(user_id)
     right_answers = await get_quiz_result(user_id)
     correct_index = quiz_data[current_question_index]['correct_option']
