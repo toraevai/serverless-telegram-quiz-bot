@@ -3,21 +3,21 @@ from aiogram.filters.command import Command
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 from database import quiz_data
-from service import get_question, new_quiz, get_quiz_index, update_user_info, get_user_result
+from service import get_question, new_quiz, get_quiz_index, update_user_info, get_quiz_result
 
 router = Router()
 
 
 @router.callback_query()
 async def bot_answer(callback: types.CallbackQuery):
-    await callback.bot.edit_message_reply_markup(
-        chat_id=callback.from_user.id,
-        message_id=callback.message.message_id,
-        reply_markup=None
-    )
     user_id = callback.from_user.id
+    # await callback.bot.edit_message_reply_markup(
+    #     chat_id=user_id,
+    #     message_id=callback.message.message_id,
+    #     reply_markup=None
+    # )
     current_question_index = await get_quiz_index(user_id)
-    right_answers = await get_user_result(user_id)
+    right_answers = await get_quiz_result(user_id)
     correct_index = quiz_data[current_question_index]['correct_option']
     opts = quiz_data[current_question_index]['options']
     if callback.data == opts[correct_index]:
@@ -33,7 +33,7 @@ async def bot_answer(callback: types.CallbackQuery):
     if current_question_index < len(quiz_data):
         await get_question(callback.message, callback.from_user.id)
     else:
-        right_answers = await get_user_result(callback.from_user.id)
+        right_answers = await get_quiz_result(callback.from_user.id)
         await callback.message.answer("Это был последний вопрос. Квиз завершен!")
         await callback.message.answer(f"Вы ответили правильно на {right_answers} из {len(quiz_data)} вопросов.")
 

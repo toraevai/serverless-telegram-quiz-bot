@@ -52,21 +52,21 @@ async def get_quiz_index(user_id):
     return results[0]["question_index"]
 
 
-async def get_user_result(user_id):
-    get_user_index = f"""
+async def get_quiz_result(user_id):
+    get_user_result = f"""
         DECLARE $user_id AS Uint64;
 
         SELECT result
         FROM `quiz_state`
         WHERE user_id == $user_id;
     """
-    results = execute_select_query(pool, get_user_index, user_id=user_id)
+    results = execute_select_query(pool, get_user_result, user_id=user_id)
 
     if len(results) == 0:
         return 0
-    if results[0]["question_index"] is None:
+    if results[0]["result"] is None:
         return 0
-    return results[0]["question_index"]
+    return results[0]["result"]
 
 
 async def update_user_info(user_id, question_index, result):
