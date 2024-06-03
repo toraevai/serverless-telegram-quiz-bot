@@ -5,7 +5,7 @@ from database import pool, execute_update_query, execute_select_query
 from database import quiz_data
 
 
-def generate_options_keyboard(answer_options, right_answer):
+def generate_options_keyboard(answer_options):
     builder = InlineKeyboardBuilder()
 
     for option in answer_options:
@@ -21,10 +21,9 @@ def generate_options_keyboard(answer_options, right_answer):
 async def get_question(message, user_id):
     # Получение текущего вопроса из словаря состояний пользователя
     current_question_index = await get_quiz_index(user_id)
-    print(current_question_index)
-    correct_index = quiz_data[current_question_index]['correct_option']
+    # print(current_question_index)
     opts = quiz_data[current_question_index]['options']
-    kb = generate_options_keyboard(opts, opts[correct_index])
+    kb = generate_options_keyboard(opts)
     await message.answer(f"{quiz_data[current_question_index]['question']}", reply_markup=kb)
 
 
